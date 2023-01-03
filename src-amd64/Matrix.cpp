@@ -2,10 +2,16 @@
 #include <cstring>
 #include <stdexcept>
 
+#ifdef _WIN32
+    #include <malloc.h>
+#endif
+
 #if defined(__GNUC__)
     #include <x86intrin.h>
+    #define ALIGN(X) __attribute__((aligned(X)))
 #elif defined(_MSC_VER)
     #include <intrin.h>
+    #define ALIGN(X) __declspec(align(X))
 #endif
 
 #include "Matrix.h"
@@ -43,10 +49,19 @@ static float* simd_floatmm_alloc(size_t bytes)
     #endif
 }
 
+static void simd_floatmm_free(float* ptr)
+{
+    #ifdef _WIN32
+        return _aligned_free(ptr);
+    #elif defined(__unix__)
+        return free(ptr);
+    #endif
+}
+
 Matrix::~Matrix() noexcept
 {
     if (m_buffer != nullptr)
-        free(m_buffer);
+        simd_floatmm_free(m_buffer);
 
     m_width = 0;
     m_height = 0;
@@ -96,7 +111,7 @@ const float* Matrix::operator [] (size_t row) const
 Matrix& Matrix::operator = (const Matrix& src) noexcept
 {
     if (m_buffer != nullptr)
-        delete m_buffer;
+        simd_floatmm_free(m_buffer);
 
     m_width = src.m_width;
     m_height = src.m_height;
@@ -108,7 +123,7 @@ Matrix& Matrix::operator = (const Matrix& src) noexcept
 Matrix& Matrix::operator = (Matrix&& src) noexcept
 {
     if (m_buffer != nullptr)
-        delete m_buffer;
+        simd_floatmm_free(m_buffer);
 
     m_width = src.m_width;
     m_height = src.m_height;
@@ -607,8 +622,6 @@ Matrix operator * (const Matrix& left, const Matrix& right)
     auto transpose = right.transpose();
     Matrix result(left.m_width, left.m_height);
 
-    float* sum = simd_floatmm_alloc(SIMD_FLOATMM_LEN);
-
     #pragma omp parallel for
     for (size_t row = 0; row < result.m_height; row++)
     {
@@ -624,6 +637,8 @@ Matrix operator * (const Matrix& left, const Matrix& right)
                 sumVec = _mm256_add_ps(sumVec, lVec);
             }
 
+            float sum[SIMD_FLOATMM_LEN] ALIGN(ALIGN_BYTES);
+            
             _mm256_store_ps(sum, sumVec);
 
             result[row][col] = 0;
@@ -638,8 +653,6 @@ Matrix operator * (const Matrix& left, const Matrix& right)
             }
         }
     }
-
-    free(sum);
 
     return result;
 }
