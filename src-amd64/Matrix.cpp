@@ -36,7 +36,11 @@ constexpr static size_t SIMD_FLOATMM_ALIGNED_LENGTH(size_t n)
 
 static float* simd_floatmm_alloc(size_t bytes)
 {
-    return static_cast<float*>(aligned_alloc(ALIGN_BYTES, bytes));
+    #ifdef _WIN32
+        return static_cast<float*>(_aligned_malloc(bytes, ALIGN_BYTES));
+    #elif defined(__unix__)
+        return static_cast<float*>(aligned_alloc(ALIGN_BYTES, bytes));
+    #endif
 }
 
 Matrix::~Matrix() noexcept
