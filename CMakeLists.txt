@@ -2,10 +2,10 @@ cmake_minimum_required(VERSION 3.13)
 project(Abacus)
 
 # 读取源文件列表
-if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "AMD64")
+if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "(x86|X86|amd|AMD)")
     aux_source_directory(${CMAKE_SOURCE_DIR}/src-amd64 SOURCES)
     set(OPT "-mavx2")
-elseif (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "arm")
+elseif (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "(aarch|AARCH|arm|ARM)")
     aux_source_directory(${CMAKE_SOURCE_DIR}/src-arm64 SOURCES)
     set(OPT "-mfpu=neon")
 endif()

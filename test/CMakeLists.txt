@@ -15,12 +15,12 @@ target_link_libraries(${PROJECT_NAME} Abacus)
 
 # 设置编译选项
 # 读取源文件列表
-if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "AMD64")
+if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "(x86|X86|amd|AMD)")
     set_target_properties(${PROJECT_NAME} 
                             PROPERTIES
                             COMPILE_FLAGS
                             "-std=c++11 -O3 -fopenmp -mavx2")
-elseif (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "arm")
+elseif (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "(aarch|AARCH|arm|ARM)")
     set_target_properties(${PROJECT_NAME} 
                         PROPERTIES
                         COMPILE_FLAGS
