@@ -53,6 +53,7 @@ public:
 
     size_t width() const noexcept;
     size_t height() const noexcept;
+
     size_t size() const noexcept;
     size_t bytes() const noexcept;
 
