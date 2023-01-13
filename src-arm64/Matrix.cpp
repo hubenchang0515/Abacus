@@ -212,6 +212,9 @@ Matrix& Matrix::operator /= (float scalar) noexcept
 
 Matrix& Matrix::operator += (const Matrix& right)
 {
+    if (m_width != right.m_width || m_height != right.m_height)
+        throw std::range_error("left.m_width != right.m_width || left.m_height != right.m_height");
+
     #pragma omp parallel for
     for (size_t i = 0; i < size(); i += SIMD_FLOATS_LEN)
     {
@@ -226,6 +229,9 @@ Matrix& Matrix::operator += (const Matrix& right)
 
 Matrix& Matrix::operator -= (const Matrix& right)
 {
+    if (m_width != right.m_width || m_height != right.m_height)
+        throw std::range_error("left.m_width != right.m_width || left.m_height != right.m_height");
+
     #pragma omp parallel for
     for (size_t i = 0; i < size(); i += SIMD_FLOATS_LEN)
     {
@@ -241,6 +247,9 @@ Matrix& Matrix::operator -= (const Matrix& right)
 
 Matrix& Matrix::scalarMul (const Matrix& right)
 {
+    if (m_width != right.m_width || m_height != right.m_height)
+        throw std::range_error("left.m_width != right.m_width || left.m_height != right.m_height");
+
     #pragma omp parallel for
     for (size_t i = 0; i < size(); i += SIMD_FLOATS_LEN)
     {
@@ -255,6 +264,9 @@ Matrix& Matrix::scalarMul (const Matrix& right)
 
 Matrix& Matrix::scalarDiv (const Matrix& right)
 {
+    if (m_width != right.m_width || m_height != right.m_height)
+        throw std::range_error("left.m_width != right.m_width || left.m_height != right.m_height");
+
     #pragma omp parallel for
     for (size_t i = 0; i < size(); i += SIMD_FLOATS_LEN)
     {
@@ -434,6 +446,9 @@ Matrix operator / (const Matrix& mat, float scalar) noexcept
 
 Matrix operator + (const Matrix& left, const Matrix& right)
 {
+    if (left.m_width != right.m_width || left.m_height != right.m_height)
+        throw std::range_error("left.m_width != right.m_width || left.m_height != right.m_height");
+
     Matrix result(left.m_width, left.m_height);
 
     #pragma omp parallel for
@@ -450,6 +465,9 @@ Matrix operator + (const Matrix& left, const Matrix& right)
 
 Matrix operator - (const Matrix& left, const Matrix& right)
 {
+    if (left.m_width != right.m_width || left.m_height != right.m_height)
+        throw std::range_error("left.m_width != right.m_width || left.m_height != right.m_height");
+
     Matrix result(left.m_width, left.m_height);
 
     #pragma omp parallel for
@@ -466,6 +484,9 @@ Matrix operator - (const Matrix& left, const Matrix& right)
 
 Matrix scalarMul (const Matrix& left, const Matrix& right)
 {
+    if (left.m_width != right.m_width || left.m_height != right.m_height)
+        throw std::range_error("left.m_width != right.m_width || left.m_height != right.m_height");
+
     Matrix result(left.m_width, left.m_height);
 
     #pragma omp parallel for
@@ -482,6 +503,9 @@ Matrix scalarMul (const Matrix& left, const Matrix& right)
 
 Matrix scalarDiv (const Matrix& left, const Matrix& right)
 {
+    if (left.m_width != right.m_width || left.m_height != right.m_height)
+        throw std::range_error("left.m_width != right.m_width || left.m_height != right.m_height");
+
     Matrix result(left.m_width, left.m_height);
 
     #pragma omp parallel for
@@ -498,6 +522,9 @@ Matrix scalarDiv (const Matrix& left, const Matrix& right)
 
 Matrix operator * (const Matrix& left, const Matrix& right)
 {
+    if (left.m_width != right.m_height)
+        throw std::range_error("left.m_width != right.m_height");
+
     auto transpose = right.transpose();
     Matrix result(right.m_width, left.m_height);
 
