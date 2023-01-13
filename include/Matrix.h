@@ -64,25 +64,18 @@ private:
     size_t m_height;
     size_t m_alignedWidth;
     float* m_buffer;
-
-    Matrix& opScalar (std::function<float(float,float)> func, float scalar) noexcept;
-    Matrix& opMat (std::function<float(float,float)> func, const Matrix& right);
-
 }; // class Matrix
 
-// static Matrix opScalar (cl::Kernel op, float scalar, const Matrix& mat) noexcept;
 Matrix operator + (float scalar, const Matrix& mat) noexcept;
 Matrix operator - (float scalar, const Matrix& mat) noexcept;
 Matrix operator * (float scalar, const Matrix& mat) noexcept;
 Matrix operator / (float scalar, const Matrix& mat) noexcept;
 
-// static Matrix opScalar (cl::Kernel op, const Matrix& mat, float scalar) noexcept;
 Matrix operator + (const Matrix& mat, float scalar) noexcept;
 Matrix operator - (const Matrix& mat, float scalar) noexcept;
 Matrix operator * (const Matrix& mat, float scalar) noexcept;
 Matrix operator / (const Matrix& mat, float scalar) noexcept;
 
-// static Matrix opMat (cl::Kernel op, const Matrix& left, const Matrix& right);
 Matrix operator + (const Matrix& left, const Matrix& right);
 Matrix operator - (const Matrix& left, const Matrix& right);
 Matrix scalarMul (const Matrix& left, const Matrix& right);
