@@ -1,8 +1,14 @@
 cmake_minimum_required(VERSION 3.10)
 project(Abacus)
 
+# 选项
+option(BUILD_WITH_OPENCL "build with opencl" OFF)
+option(BUILD_WITH_TEST "build with test" OFF)
+
 # 读取源文件列表
-if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "(x86|X86|amd|AMD)")
+if (BUILD_WITH_OPENCL)
+    aux_source_directory(${CMAKE_SOURCE_DIR}/src-opencl SOURCES)
+elseif (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "(x86|X86|amd|AMD)")
     aux_source_directory(${CMAKE_SOURCE_DIR}/src-amd64 SOURCES)
     set(OPT "-mavx2")
 elseif (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "(aarch|AARCH|arm|ARM)")
@@ -45,6 +51,6 @@ install(TARGETS
 )
 
 # 单元测试
-if (BUILD_TEST)
+if (BUILD_WITH_TEST)
     add_subdirectory("test")
 endif()

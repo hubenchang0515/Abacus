@@ -2,20 +2,25 @@ cmake_minimum_required(VERSION 3.10)
 project(AbacusTest)
 
 # 读取源文件列表
-aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/ SOURCES)
+aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/ TEST_SOURCE)
 
 # 构建可执行文件
-add_executable(${PROJECT_NAME} ${SOURCES})
+add_executable(${PROJECT_NAME} ${TEST_SOURCE})
 
 # 引用头文件路径
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../include())
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../include)
 
 # 链接库
 target_link_libraries(${PROJECT_NAME} Abacus)
 
 # 设置编译选项
 # 读取源文件列表
-if (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "(x86|X86|amd|AMD)")
+if (BUILD_WITH_OPENCL)
+    set_target_properties(${PROJECT_NAME} 
+                            PROPERTIES
+                            COMPILE_FLAGS
+                            "-std=c++11 -O3")
+elseif (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "(x86|X86|amd|AMD)")
     set_target_properties(${PROJECT_NAME} 
                             PROPERTIES
                             COMPILE_FLAGS
@@ -33,7 +38,13 @@ elseif (CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "(aarch|AARCH|arm|ARM)")
 endif()
 
 # 设置链接选项
-set_target_properties(${PROJECT_NAME} 
-                        PROPERTIES
-                        LINK_FLAGS 
-                        "-fopenmp")
+if (BUILD_WITH_OPENCL)
+    target_link_libraries(${PROJECT_NAME} Abacus OpenCL)
+else()
+    target_link_libraries(${PROJECT_NAME} Abacus)
+    set_target_properties(${PROJECT_NAME} 
+                            PROPERTIES
+                            LINK_OPTIONS 
+                            "-fopenmp")
+endif()
+
