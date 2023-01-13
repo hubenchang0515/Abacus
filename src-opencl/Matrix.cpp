@@ -289,7 +289,7 @@ Matrix& Matrix::operator += (float scalar) noexcept
 
     auto op = accelerator().kernel("matAddScalar");
     op.setArg(0, mat);
-    op.setArg(1, size());
+    op.setArg(1, static_cast<unsigned>(size()));
     op.setArg(2, scalar);
     op.setArg(3, mat);
     queue.enqueueNDRangeKernel(op, 0, accelerator().globalSize(size()), accelerator().localSize(size()));
@@ -308,7 +308,7 @@ Matrix& Matrix::operator -= (float scalar) noexcept
 
     auto op = accelerator().kernel("matSubScalar");
     op.setArg(0, mat);
-    op.setArg(1, size());
+    op.setArg(1, static_cast<unsigned>(size()));
     op.setArg(2, scalar);
     op.setArg(3, mat);
     queue.enqueueNDRangeKernel(op, 0, accelerator().globalSize(size()), accelerator().localSize(size()));
@@ -327,7 +327,7 @@ Matrix& Matrix::operator *= (float scalar) noexcept
 
     auto op = accelerator().kernel("matMulScalar");
     op.setArg(0, mat);
-    op.setArg(1, size());
+    op.setArg(1, static_cast<unsigned>(size()));
     op.setArg(2, scalar);
     op.setArg(3, mat);
     queue.enqueueNDRangeKernel(op, 0, accelerator().globalSize(size()), accelerator().localSize(size()));
@@ -346,7 +346,7 @@ Matrix& Matrix::operator /= (float scalar) noexcept
 
     auto op = accelerator().kernel("matDivScalar");
     op.setArg(0, mat);
-    op.setArg(1, size());
+    op.setArg(1, static_cast<unsigned>(size()));
     op.setArg(2, scalar);
     op.setArg(3, mat);
     queue.enqueueNDRangeKernel(op, 0, accelerator().globalSize(size()), accelerator().localSize(size()));
@@ -373,7 +373,7 @@ Matrix& Matrix::operator += (const Matrix& right)
     op.setArg(0, leftMat);
     op.setArg(1, rightMat);
     op.setArg(2, leftMat);
-    op.setArg(3, size());
+    op.setArg(3, static_cast<unsigned>(size()));
     queue.enqueueNDRangeKernel(op, 0, accelerator().globalSize(size()), accelerator().localSize(size()));
     
     queue.enqueueReadBuffer(leftMat, CL_TRUE, 0, bytes(), m_buffer);
@@ -397,7 +397,7 @@ Matrix& Matrix::operator -= (const Matrix& right)
     op.setArg(0, leftMat);
     op.setArg(1, rightMat);
     op.setArg(2, leftMat);
-    op.setArg(3, size());
+    op.setArg(3, static_cast<unsigned>(size()));
     queue.enqueueNDRangeKernel(op, 0, accelerator().globalSize(size()), accelerator().localSize(size()));
     
     queue.enqueueReadBuffer(leftMat, CL_TRUE, 0, bytes(), m_buffer);
@@ -422,7 +422,7 @@ Matrix& Matrix::scalarMul (const Matrix& right)
     op.setArg(0, leftMat);
     op.setArg(1, rightMat);
     op.setArg(2, leftMat);
-    op.setArg(3, size());
+    op.setArg(3, static_cast<unsigned>(size()));
     queue.enqueueNDRangeKernel(op, 0, accelerator().globalSize(size()), accelerator().localSize(size()));
     
     queue.enqueueReadBuffer(leftMat, CL_TRUE, 0, bytes(), m_buffer);
@@ -446,7 +446,7 @@ Matrix& Matrix::scalarDiv (const Matrix& right)
     op.setArg(0, leftMat);
     op.setArg(1, rightMat);
     op.setArg(2, leftMat);
-    op.setArg(3, size());
+    op.setArg(3, static_cast<unsigned>(size()));
     queue.enqueueNDRangeKernel(op, 0, accelerator().globalSize(size()), accelerator().localSize(size()));
     
     queue.enqueueReadBuffer(leftMat, CL_TRUE, 0, bytes(), m_buffer);
@@ -499,7 +499,7 @@ Matrix operator + (float scalar, const Matrix& mat) noexcept
     auto op = accelerator().kernel("scalarAddMat");
     op.setArg(0, scalar);
     op.setArg(1, buf);
-    op.setArg(2, mat.size());
+    op.setArg(2, static_cast<unsigned>(mat.size()));
     op.setArg(3, buf);
     queue.enqueueNDRangeKernel(op, 0, accelerator().globalSize(mat.size()), accelerator().localSize(mat.size()));
 
@@ -519,7 +519,7 @@ Matrix operator - (float scalar, const Matrix& mat) noexcept
     auto op = accelerator().kernel("scalarSubMat");
     op.setArg(0, scalar);
     op.setArg(1, buf);
-    op.setArg(2, mat.size());
+    op.setArg(2, static_cast<unsigned>(mat.size()));
     op.setArg(3, buf);
     queue.enqueueNDRangeKernel(op, 0, accelerator().globalSize(mat.size()), accelerator().localSize(mat.size()));
 
@@ -539,7 +539,7 @@ Matrix operator * (float scalar, const Matrix& mat) noexcept
     auto op = accelerator().kernel("scalarMulMat");
     op.setArg(0, scalar);
     op.setArg(1, buf);
-    op.setArg(2, mat.size());
+    op.setArg(2, static_cast<unsigned>(mat.size()));
     op.setArg(3, buf);
     queue.enqueueNDRangeKernel(op, 0, accelerator().globalSize(mat.size()), accelerator().localSize(mat.size()));
 
@@ -559,7 +559,7 @@ Matrix operator / (float scalar, const Matrix& mat) noexcept
     auto op = accelerator().kernel("scalarDivMat");
     op.setArg(0, scalar);
     op.setArg(1, buf);
-    op.setArg(2, mat.size());
+    op.setArg(2, static_cast<unsigned>(mat.size()));
     op.setArg(3, buf);
     queue.enqueueNDRangeKernel(op, 0, accelerator().globalSize(mat.size()), accelerator().localSize(mat.size()));
 
@@ -579,7 +579,7 @@ Matrix operator + (const Matrix& mat, float scalar) noexcept
 
     auto op = accelerator().kernel("matAddScalar");
     op.setArg(0, buf);
-    op.setArg(1, mat.size());
+    op.setArg(1, static_cast<unsigned>(mat.size()));
     op.setArg(2, scalar);
     op.setArg(3, buf);
     queue.enqueueNDRangeKernel(op, 0, accelerator().globalSize(mat.size()), accelerator().localSize(mat.size()));
@@ -599,7 +599,7 @@ Matrix operator - (const Matrix& mat, float scalar) noexcept
 
     auto op = accelerator().kernel("matSubScalar");
     op.setArg(0, buf);
-    op.setArg(1, mat.size());
+    op.setArg(1, static_cast<unsigned>(mat.size()));
     op.setArg(2, scalar);
     op.setArg(3, buf);
     queue.enqueueNDRangeKernel(op, 0, accelerator().globalSize(mat.size()), accelerator().localSize(mat.size()));
@@ -619,7 +619,7 @@ Matrix operator * (const Matrix& mat, float scalar) noexcept
 
     auto op = accelerator().kernel("matMulScalar");
     op.setArg(0, buf);
-    op.setArg(1, mat.size());
+    op.setArg(1, static_cast<unsigned>(mat.size()));
     op.setArg(2, scalar);
     op.setArg(3, buf);
     queue.enqueueNDRangeKernel(op, 0, accelerator().globalSize(mat.size()), accelerator().localSize(mat.size()));
@@ -639,7 +639,7 @@ Matrix operator / (const Matrix& mat, float scalar) noexcept
 
     auto op = accelerator().kernel("matDivScalar");
     op.setArg(0, buf);
-    op.setArg(1, mat.size());
+    op.setArg(1, static_cast<unsigned>(mat.size()));
     op.setArg(2, scalar);
     op.setArg(3, buf);
     queue.enqueueNDRangeKernel(op, 0, accelerator().globalSize(mat.size()), accelerator().localSize(mat.size()));
@@ -666,7 +666,7 @@ Matrix operator + (const Matrix& left, const Matrix& right)
     op.setArg(0, leftMat);
     op.setArg(1, rightMat);
     op.setArg(2, leftMat);
-    op.setArg(3, left.size());
+    op.setArg(3, static_cast<unsigned>(left.size()));
     queue.enqueueNDRangeKernel(op, 0, accelerator().globalSize(left.size()), accelerator().localSize(left.size()));
     
     Matrix result(left.m_width, left.m_height);
@@ -691,7 +691,7 @@ Matrix operator - (const Matrix& left, const Matrix& right)
     op.setArg(0, leftMat);
     op.setArg(1, rightMat);
     op.setArg(2, leftMat);
-    op.setArg(3, left.size());
+    op.setArg(3, static_cast<unsigned>(left.size()));
     queue.enqueueNDRangeKernel(op, 0, accelerator().globalSize(left.size()), accelerator().localSize(left.size()));
     
     Matrix result(left.m_width, left.m_height);
@@ -715,7 +715,7 @@ Matrix scalarMul (const Matrix& left, const Matrix& right)
     op.setArg(0, leftMat);
     op.setArg(1, rightMat);
     op.setArg(2, leftMat);
-    op.setArg(3, left.size());
+    op.setArg(3, static_cast<unsigned>(left.size()));
     queue.enqueueNDRangeKernel(op, 0, accelerator().globalSize(left.size()), accelerator().localSize(left.size()));
     
     Matrix result(left.m_width, left.m_height);
@@ -740,7 +740,7 @@ Matrix scalarDiv (const Matrix& left, const Matrix& right)
     op.setArg(0, leftMat);
     op.setArg(1, rightMat);
     op.setArg(2, leftMat);
-    op.setArg(3, left.size());
+    op.setArg(3, static_cast<unsigned>(left.size()));
     queue.enqueueNDRangeKernel(op, 0, accelerator().globalSize(left.size()), accelerator().localSize(left.size()));
     
     Matrix result(left.m_width, left.m_height);
@@ -765,11 +765,11 @@ Matrix operator * (const Matrix& left, const Matrix& right)
 
     auto op = accelerator().kernel("matMulMat");
     op.setArg(0, leftMat);
-    op.setArg(1, left.m_width);
+    op.setArg(1, static_cast<unsigned>(left.m_width));
     op.setArg(2, rightMat);
     op.setArg(3, resultMat);
-    op.setArg(4, result.m_width);
-    op.setArg(5, result.m_height);
+    op.setArg(4, static_cast<unsigned>(result.m_width));
+    op.setArg(5, static_cast<unsigned>(result.m_height));
     queue.enqueueNDRangeKernel(op, 0, accelerator().globalSize(result.size()), accelerator().localSize(result.size()));
 
     queue.enqueueReadBuffer(resultMat, CL_TRUE, 0, result.bytes(), result.m_buffer);
